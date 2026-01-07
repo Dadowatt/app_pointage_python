@@ -8,16 +8,38 @@ def afficher_menu():
     print("5. Quitter")
 
 def ajouter_apprenant():
-    identifiant = input("Identifiant : ")
+    while True:
+        try:
+            identifiant = int(input("Identifiant : "))
+            if identifiant < 1:
+                print("L'identifiant doit être supérieur ou égale à 1")
+                continue
+            for a in apprenants:
+                if a["id"] == identifiant:
+                    print("Identifiant déjà utilisé.")
+                    break
+            else:
+                break
+        except ValueError:
+            print("Veuillez entrer un nombre valide")
+            continue
 
-    for a in apprenants:
-        if a["id"] == identifiant:
-            print("Identifiant déjà utilisé.")
-            return
+    while True:    
+        nom = input("Nom : ")
+        if nom.isalpha():
+            break
+        print('Nom invalide')
+    while True:
+        prenom = input("Prénom : ")
+        if prenom.replace(" ", "").isalpha():
+            break
+        print('Prénom invalide')
 
-    nom = input("Nom : ")
-    prenom = input("Prénom : ")
-    promo = input("Promo : ")
+    while True:
+        promo = input("Promo : ").upper().strip()
+        if len(promo) == 2 and promo[0] == 'P' and promo[1].isdigit():
+            break
+        print('promo invalide')
 
     apprenant = {
         "id": identifiant,
@@ -27,7 +49,7 @@ def ajouter_apprenant():
         "presence": None
     }
     apprenants.append(apprenant)
-    print("Apprenant ajouté")
+    print("Apprenant ajouté avec succès!")
 
 def enregistrer_presence():
     if len(apprenants) == 0:
@@ -48,10 +70,14 @@ def enregistrer_presence():
                 print("Erreur : saisir p ou a.")
 
 def afficher_presents():
-    print("\nApprenants présents :")
+    found = False
+    print("\n==== Apprenants présents ==== :")
     for a in apprenants:
         if a["presence"] == "présent":
             print(f"- {a['prenom']} {a['nom']}")
+            found = True
+    if not found:
+        print("\nAucun apprenant présent")
 
 def calculer_taux_presence():
     presents = 0
@@ -60,8 +86,8 @@ def calculer_taux_presence():
             presents += 1
 
     if len(apprenants) > 0:
-        taux = (presents / len(apprenants)) * 100
-        print("Taux de présence :", taux, "%")
+        taux = int((presents / len(apprenants)) * 100)
+        print(f"Taux de présence : {taux} %")
     else:
         print("Aucun apprenant.")
 
